@@ -1,6 +1,7 @@
 {
   "name": "sk-cli",
   "version": "0.1.0",
+  "description": "Save the series of commands and run them easily.",
   "scripts": {
     "format": "prettier --write ."
   },
