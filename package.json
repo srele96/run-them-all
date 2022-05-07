@@ -6,7 +6,7 @@
     "format": "prettier --write ."
   },
   "bin": {
-    "sk-cli": "index.js"
+    "run-them-all": "index.js"
   },
   "main": "index.js",
   "license": "MIT",
