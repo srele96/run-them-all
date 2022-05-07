@@ -1,0 +1,15 @@
+{
+  "name": "sk-cli",
+  "version": "0.1.0",
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "bin": {
+    "sk-cli": "index.js"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^2.6.2"
+  }
+}
