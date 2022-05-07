@@ -2,9 +2,11 @@
   "name": "run-them-all",
   "version": "0.1.0",
   "description": "Allows you to save the series of commands to a configuration and run them all easily.",
+  "keywords": ["run", "them", "all", "config", "json"],
   "author": {
     "name": "Srecko Kostic",
-    "email": "srele96@gmail.com"
+    "email": "srele96@gmail.com",
+    "url": "https://github.com/srele96"
   },
   "homepage": "https://github.com/srele96/run-them-all",
   "repository": {
