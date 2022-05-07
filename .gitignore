@@ -8,6 +8,7 @@ sk-cli.config.json
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/**/modules.xml
 *.iws
 *.ipr
 *.iml
