@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-const exec = require('child_process').exec;
-const resolve = require('path').resolve;
-const writeFileSync = require('fs').writeFileSync;
-const args = process.argv.slice(2);
-const arg = args[0];
+const { program } = require('commander');
+const { resolve } = require('path');
+const { writeFileSync } = require('fs');
+const { exec } = require('child_process');
+const packageJson = require('./package.json');
 
 function getSavedConfig() {
   let config = null;
@@ -12,8 +12,7 @@ function getSavedConfig() {
   // it is not clear what json is invalid and why
   // let the user know that saved configuration is invalid
   try {
-    // saved configuration should be read from the local module directory
-    config = require(resolve(__dirname, 'sk-cli.config.json'));
+    config = require('./sk-cli.config.json');
   } catch (err) {
     throw new Error(
       'Something went wrong while trying to read saved configuration.\n' +
@@ -24,92 +23,84 @@ function getSavedConfig() {
   return config;
 }
 
-if (!arg) {
-  console.log('Error! No argument provided.');
-  process.exit(1);
-} else if (arg === 'config') {
-  const flag = args[1];
-  if (!flag) {
-    console.log('Error! Please provide the configuration flag.');
-    process.exit(1);
-  } else if (flag === '--set') {
-    const configFile = args[2];
+program.name(packageJson.name).version(packageJson.version);
 
-    if (!configFile) {
-      console.log('Error! Please provide a configuration file.');
-      process.exit(1);
-    }
+program
+  .command('config')
+  .description('manage configuration')
+  .option('--set <fileName>', 'save provided configuration')
+  .option('--read', 'view saved configuration')
+  .action(function (args) {
+    const { set: fileName, read } = args;
 
-    if (!configFile.endsWith('.json')) {
-      console.log("Error! The file name doesn't end with .json");
-      process.exit(1);
-    }
-
-    // user configuration should be read from the directory that ran cli command
-    const configPath = resolve(process.cwd(), configFile);
-    const config = require(configPath);
-
-    // save configuration to local module directory
-    writeFileSync(
-      resolve(__dirname, 'sk-cli.config.json'),
-      JSON.stringify(config, null, 2),
-      {
-        encoding: 'utf8',
+    if (fileName) {
+      if (!fileName.endsWith('.json')) {
+        console.log("Error! The file name doesn't end with .json");
+        process.exit(1);
       }
-    );
 
-    console.log(
-      'Configuration saved successfully. ' +
-        'Type "sk-cli config --read" to view the configuration.'
-    );
-  } else if (flag === '--read') {
-    const config = getSavedConfig();
+      // user configuration should be read from the directory that ran cli command
+      const configPath = resolve(process.cwd(), fileName);
+      const config = require(configPath);
 
-    console.log('Your saved configuration is:');
-    console.log(config);
-  } else {
-    console.log(flag + '" is not a valid flag.');
-    process.exit(1);
-  }
-} else {
-  const config = getSavedConfig();
-  const validCommands = {};
-  const invalidCommands = [];
+      // save configuration to local module directory
+      writeFileSync(
+        resolve(__dirname, 'sk-cli.config.json'),
+        JSON.stringify(config, null, 2),
+        { encoding: 'utf8' }
+      );
 
-  // store the valid commands from the configuration, save the invalid ones
-  args.forEach((command) => {
-    if (config[command]) {
-      validCommands[command] = config[command];
-    } else {
-      invalidCommands.push(command);
+      console.log('Configuration saved successfully.');
+    }
+
+    if (read) {
+      const config = getSavedConfig();
+
+      console.log('Your saved configuration is:');
+      console.log(JSON.stringify(config, null, 2));
     }
   });
 
-  const validCommandsKeys = Object.keys(validCommands);
+program
+  .command('run <commands...>')
+  .description('runs provided commands from the configuration')
+  .action(function (commands) {
+    const config = getSavedConfig();
+    const validCommands = {};
+    const invalidCommands = [];
 
-  if (validCommandsKeys.length === 0) {
-    console.log(
-      'Process terminated. You have ran invalid commands.\n' +
-        'To see valid commands, run "sk-cli config --read"'
-    );
-    process.exit(1);
-  }
+    commands.forEach((command) => {
+      if (config[command]) {
+        validCommands[command] = config[command];
+      } else {
+        invalidCommands.push(command);
+      }
+    });
 
-  if (invalidCommands.length > 0) {
-    console.log(
-      'The following commands are invalid and will be ignored: ' +
-        invalidCommands.join(', ')
-    );
-  }
+    const validCommandsKeys = Object.keys(validCommands);
 
-  // execute valid commands and notify the user
-  validCommandsKeys.forEach((command) => {
-    console.log('Running: ' + command);
+    if (validCommandsKeys.length === 0) {
+      console.log('You have not provided any valid commands.');
+      process.exit(1);
+    }
 
-    const commands = validCommands[command].join(' & ');
-    // execute the merged commands in new cmd and keep the cmd running
-    exec('start cmd /k"' + commands + '"', (err, stdout, stderr) => {
-      console.log({ err, stdout, stderr });
+    if (invalidCommands.length > 0) {
+      console.log(
+        'The following commands are invalid and will be ignored: ' +
+          invalidCommands.join(', ')
+      );
+    }
+
+    // execute valid commands and notify the user
+    validCommandsKeys.forEach((command) => {
+      console.log('Running: ' + command);
+
+      const commands = validCommands[command].join(' & ');
+      // execute the merged commands in new cmd and keep the cmd running
+      exec('start cmd /k"' + commands + '"', (err, stdout, stderr) => {
+        console.log({ err, stdout, stderr });
+      });
     });
   });
-}
+
+program.parse(process.argv);
