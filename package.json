@@ -1,8 +1,14 @@
 {
   "name": "run-them-all",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Allows you to save the series of commands to a configuration and run them all easily.",
-  "keywords": ["run", "them", "all", "config", "json"],
+  "keywords": [
+    "run",
+    "them",
+    "all",
+    "config",
+    "json"
+  ],
   "author": {
     "name": "Srecko Kostic",
     "email": "srele96@gmail.com",
