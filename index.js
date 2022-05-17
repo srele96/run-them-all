@@ -64,36 +64,35 @@ program
 program
   .command('run <commands...>')
   .description('runs provided commands from the configuration')
-  .action(function (commands) {
+  .action(function (commandKeys) {
     const config = getSavedConfig();
-    const validCommands = {};
-    const invalidCommands = [];
+    let validCommandKeys = [];
+    let invalidCommandKeys = [];
 
-    commands.forEach((command) => {
-      if (config[command]) {
-        validCommands[command] = config[command];
+    commandKeys.forEach((commandKey) => {
+      if (config[commandKey]) {
+        validCommandKeys = [...validCommandKeys, commandKey];
       } else {
-        invalidCommands.push(command);
+        invalidCommandKeys = [...invalidCommandKeys, commandKey];
       }
     });
 
-    const validCommandsKeys = Object.keys(validCommands);
-
-    if (validCommandsKeys.length === 0) {
+    if (validCommandKeys.length === 0) {
       console.log('You have not provided any valid commands.');
       process.exit(1);
     }
 
-    if (invalidCommands.length > 0) {
+    if (invalidCommandKeys.length > 0) {
       console.log(
         'The following commands are invalid and will be ignored: ' +
-          invalidCommands.join(', ')
+          invalidCommandKeys.join(', ')
       );
     }
 
     // execute valid commands and notify the user
-    validCommandsKeys.forEach((command) => {
-      console.log('Running: ' + command);
+    validCommandKeys.forEach((commandKey) => {
+      console.log('Running: ' + commandKey);
+      const command = config[commandKey];
 
       exec(command, (err, stdout, stderr) => {
         console.log({ err, stdout, stderr });
