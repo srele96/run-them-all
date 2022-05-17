@@ -95,9 +95,7 @@ program
     validCommandsKeys.forEach((command) => {
       console.log('Running: ' + command);
 
-      const commands = validCommands[command].join(' & ');
-      // execute the merged commands in new cmd and keep the cmd running
-      exec('start cmd /k"' + commands + '"', (err, stdout, stderr) => {
+      exec(command, (err, stdout, stderr) => {
         console.log({ err, stdout, stderr });
       });
     });
