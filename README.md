@@ -19,8 +19,8 @@ Add the following content to it:
 
 ```json
 {
-  "COMMAND_ONE": ["echo one", "echo two", "echo three"],
-  "COMMAND_TWO": ["echo four", "echo five", "echo six"]
+  "COMMAND_ONE": "echo one && echo two && echo three",
+  "COMMAND_TWO": "echo four && echo five && echo six"
 }
 ```
 
@@ -28,7 +28,7 @@ Add the following content to it:
 2. Create a configuration file.
 3. Set the configuration: `run-them-all config --set config.json`.
 4. Verify that the configuration is set: `run-them-all config --read`.
-5. Run the commands: `run-them-all COMMAND_ONE COMMAND_TWO`.
+5. Run the commands: `run-them-all run COMMAND_ONE COMMAND_TWO`.
 
 You should see the two command prompts opened.
 
@@ -54,14 +54,12 @@ six
 run-them-all
 ```
 
-This package works only on Windows and uses command prompt by default.
-
 ## Available commands
 
 ```
-run-them-all run <commands...>              Runs the commands.
-run-them-all config --read                  Reads the configuration and prints
-                                            it to the console.
-run-them-all config --set <fileName>        Reads the content of your configuration
-                                            file and saves it.
+    run-them-all run <commands...>              Runs the commands.
+    run-them-all config --read                  Reads the configuration and prints
+                                                it to the console.
+    run-them-all config --set <fileName>        Reads the content of your configuration
+                                                file and saves it.
 ```
