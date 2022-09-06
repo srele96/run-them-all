@@ -26,7 +26,7 @@ module.exports.saveConfigPath = function saveConfigPath(path) {
         );
     });
   } else
-    throw new Error(
+    console.log(
       "Couldn't save your configuration: " +
         path +
         '. Currently supported configurations are: ' +
