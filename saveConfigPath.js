@@ -17,7 +17,7 @@ module.exports.saveConfigPath = function saveConfigPath(path) {
     const createAbsolutePath = resolve(path);
     const createConfig = { path: createAbsolutePath };
 
-    writeFile('config.json', createConfig, (err) => {
+    writeFile('config.json', JSON.stringify(createConfig, null, 2), (err) => {
       if (err)
         console.log('Failed to save path!\n', JSON.stringify(err, null, 2));
       else
