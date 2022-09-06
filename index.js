@@ -22,9 +22,9 @@ function getSavedConfig() {
   return config;
 }
 
-const program = new Command();
-
-program.name(packageJson.name).version(packageJson.version);
+const program = new Command()
+  .name(packageJson.name)
+  .version(packageJson.version);
 
 program
   .command('config <path>')
