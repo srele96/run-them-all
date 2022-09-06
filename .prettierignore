@@ -1,4 +1,3 @@
 node_modules
-sk-cli.config.json
+config.json
 .idea
-package-lock.json

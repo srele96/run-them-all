@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
-const { program } = require('commander');
-const { resolve } = require('path');
-const { writeFileSync } = require('fs');
+const { Command } = require('commander');
 const { exec } = require('child_process');
+const { saveConfigPath } = require('./saveConfigPath');
 const packageJson = require('./package.json');
 
 function getSavedConfig() {
@@ -23,43 +22,16 @@ function getSavedConfig() {
   return config;
 }
 
-program.name(packageJson.name).version(packageJson.version);
+const program = new Command()
+  .name(packageJson.name)
+  .version(packageJson.version);
 
 program
-  .command('config')
-  .description('manage configuration')
-  .option('--set <fileName>', 'save provided configuration')
-  .option('--read', 'view saved configuration')
-  .action(function (args) {
-    const { set: fileName, read } = args;
-
-    if (fileName) {
-      if (!fileName.endsWith('.json')) {
-        console.log("Error! The file name doesn't end with .json");
-        process.exit(1);
-      }
-
-      // user configuration should be read from the directory that ran cli command
-      const configPath = resolve(process.cwd(), fileName);
-      const config = require(configPath);
-
-      // save configuration to local module directory
-      writeFileSync(
-        resolve(__dirname, 'sk-cli.config.json'),
-        JSON.stringify(config, null, 2),
-        { encoding: 'utf8' }
-      );
-
-      console.log('Configuration saved successfully.');
-    }
-
-    if (read) {
-      const config = getSavedConfig();
-
-      console.log('Your saved configuration is:');
-      console.log(JSON.stringify(config, null, 2));
-    }
-  });
+  .command('config <path>')
+  .description(
+    'Save path to a configuration. We use this path to find saved commands.'
+  )
+  .action(saveConfigPath);
 
 program
   .command('run <commands...>')
