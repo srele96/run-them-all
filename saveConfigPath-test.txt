@@ -1,0 +1,9 @@
+Setting up jest and creating tests takes time. I want to focus on adding
+features downside of that approach is I will forget test cases.
+
+- Throws an error when a path is an empty string
+- Throws an error when a path is not a string (how to test for non string
+  values? there are many non string values)
+- Saves path when it points to json file
+- Rejects to save path when it points to non json file (how to test for
+  non json files? there is too many other extensions)
