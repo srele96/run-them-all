@@ -15,15 +15,16 @@ module.exports.saveConfigPath = function saveConfigPath(path) {
 
   if (isSupported) {
     const createAbsolutePath = resolve(path);
-    const createConfig = { path: createAbsolutePath };
+    const createFormattedConfig = JSON.stringify(
+      { path: createAbsolutePath },
+      null,
+      2
+    );
 
-    writeFile('config.json', JSON.stringify(createConfig, null, 2), (err) => {
+    writeFile('config.json', createFormattedConfig, (err) => {
       if (err)
         console.log('Failed to save path!\n', JSON.stringify(err, null, 2));
-      else
-        console.log(
-          'Saved path successfully!\n' + JSON.stringify(createConfig, null, 2)
-        );
+      else console.log('Saved path successfully!\n' + createFormattedConfig);
     });
   } else
     console.log(
