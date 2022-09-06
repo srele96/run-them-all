@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { program } = require('commander');
+const { Command } = require('commander');
 const { exec } = require('child_process');
 const { saveConfigPath } = require('./saveConfigPath');
 const packageJson = require('./package.json');
@@ -21,6 +21,8 @@ function getSavedConfig() {
 
   return config;
 }
+
+const program = new Command();
 
 program.name(packageJson.name).version(packageJson.version);
 
