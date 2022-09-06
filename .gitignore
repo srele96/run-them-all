@@ -12,3 +12,5 @@ sk-cli.config.json
 *.iws
 *.ipr
 *.iml
+
+config.json

@@ -10,7 +10,7 @@ module.exports.saveConfigPath = function saveConfigPath(path) {
   if (typeof path !== 'string' || path === '')
     throw new Error('Path must be a non-empty string!');
 
-  const supportedExtension = 'json';
+  const supportedExtension = '.json';
   const isSupported = extname(path) === supportedExtension;
 
   if (isSupported) {
