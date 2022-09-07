@@ -20,7 +20,8 @@
     "url": "https://github.com/srele96/run-them-all.git"
   },
   "scripts": {
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "ci:format": "prettier -c ."
   },
   "bin": {
     "run-them-all": "index.js"
