@@ -1,0 +1,26 @@
+run-them-all run <aliases...>
+
+Handle termination through the use of errors. It may roughly look something like:
+
+run:
+  try
+    // Throws on failure and terminates flow.
+    cli_config = read_file(path)
+
+    // Throws on invalid config.
+    validate(cli_config, validator)
+
+    // Throws on failure and terminates flow.
+    user_config = read_file(path)
+
+    // Throws on invalid config.
+    validate(user_config, validator)
+
+    // Throws if a command is missing and terminates flow.
+    commands = get_commands(aliases, config)
+
+    // I don't expect this to throw, but we don't know.
+    run-them-all(commands)
+  catch error
+    print error message
+    exit process with code 1
