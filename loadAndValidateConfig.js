@@ -2,7 +2,7 @@ const { cosmiconfig } = require('cosmiconfig');
 const joi = require('joi');
 
 // cosmiconfig https://github.com/davidtheclark/cosmiconfig/tree/v7.0.1
-// joi https://github.com/hapijs/joi
+// joi         https://github.com/hapijs/joi
 
 // ----------------------------------------------------------------------------
 // load configuration
