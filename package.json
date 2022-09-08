@@ -29,6 +29,7 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "nodemon": "^2.0.19",
     "prettier": "^2.6.2"
   },
   "dependencies": {
