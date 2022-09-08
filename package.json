@@ -21,7 +21,8 @@
   },
   "scripts": {
     "format": "prettier --write .",
-    "ci:format": "prettier -c ."
+    "ci:format": "prettier -c .",
+    "watch": "nodemon set-of-invalid-json-files/readInvalidFiles.js"
   },
   "bin": {
     "run-them-all": "index.js"
@@ -34,7 +35,8 @@
   },
   "dependencies": {
     "commander": "7.0.0-2",
-    "cosmiconfig": "7.0.1"
+    "cosmiconfig": "7.0.1",
+    "joi": "^17.6.0"
   },
   "engines": {
     "node": ">=10.0.0"
