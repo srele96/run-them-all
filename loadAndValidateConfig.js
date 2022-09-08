@@ -7,7 +7,7 @@ const joi = require('joi');
 // ----------------------------------------------------------------------------
 // load configuration
 // cosmiconfig uses module name to auto load/search
-cosmiconfig(/* what should cosmiconfig name be? */'')
+cosmiconfig(/* what should cosmiconfig name be? */ '')
   // rely on cosmiconfig parser to spot invalid configuration
   .load(/* path to configuration */ '')
   .then(() => {
