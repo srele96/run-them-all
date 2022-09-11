@@ -1,75 +1,62 @@
 #!/usr/bin/env node
 
-const { Command } = require('commander');
-const { exec } = require('child_process');
-const { saveConfigPath } = require('./saveConfigPath');
-const packageJson = require('./package.json');
+const { writeFile } /****************/ = require('fs').promises;
+const { resolve } /******************/ = require('path');
+const { spawn } /********************/ = require('child_process');
+const { Command } /******************/ = require('commander');
+const { cosmiconfig } /**************/ = require('cosmiconfig');
+const packageJson /******************/ = require('./package.json');
 
-function getSavedConfig() {
-  let config = null;
-  // if reading saved configuration fails, for example invalid JSON
-  // it is not clear what json is invalid and why
-  // let the user know that saved configuration is invalid
-  try {
-    config = require('./sk-cli.config.json');
-  } catch (err) {
-    throw new Error(
-      'Something went wrong while trying to read saved configuration.\n' +
-        err.message
-    );
-  }
-
-  return config;
-}
+const explorer = cosmiconfig(packageJson.name);
 
 const program = new Command()
   .name(packageJson.name)
   .version(packageJson.version);
 
 program
-  .command('config <path>')
-  .description(
-    'Save path to a configuration. We use this path to find saved commands.'
-  )
-  .action(saveConfigPath);
+  .arguments('<aliases...>')
+  .description('runs commands from your configuration file using aliases')
+  .action((aliases) => {
+    explorer
+      // load path to users config
+      .load('config.json')
+      .then((result) => result.config.path)
+      // load users config
+      .then(explorer.load)
+      .then((result) => result.config)
+      // collect commands
+      .then((config) =>
+        aliases.reduce((commands, alias) => {
+          const command = config[alias];
+          if (command) return [...commands, command];
+          // don't omit a command
+          else {
+            console.log(`Terminating. Couldn't find matching command ${alias}`);
+            process.exit(1);
+          }
+        }, [])
+      )
+      // run all commands
+      .then((commands) =>
+        commands.forEach((command) =>
+          spawn(command, { shell: true, stdio: 'inherit' })
+        )
+      );
+  });
 
 program
-  .command('run <commands...>')
-  .description('runs provided commands from the configuration')
-  .action(function (commandKeys) {
-    const config = getSavedConfig();
-    let validCommandKeys = [];
-    let invalidCommandKeys = [];
+  .command('config <path>')
+  .description('saves path to your configuration file')
+  // create cli configuration and save absolute path to users configuration
+  .action((path) => {
+    const absolutePath = resolve(path);
+    const config = { path: absolutePath };
 
-    commandKeys.forEach((commandKey) => {
-      if (config[commandKey]) {
-        validCommandKeys = [...validCommandKeys, commandKey];
-      } else {
-        invalidCommandKeys = [...invalidCommandKeys, commandKey];
-      }
-    });
-
-    if (validCommandKeys.length === 0) {
-      console.log('You have not provided any valid commands.');
-      process.exit(1);
-    }
-
-    if (invalidCommandKeys.length > 0) {
+    writeFile('config.json', JSON.stringify(config)).then(() =>
       console.log(
-        'The following commands are invalid and will be ignored: ' +
-          invalidCommandKeys.join(', ')
-      );
-    }
-
-    // execute valid commands and notify the user
-    validCommandKeys.forEach((commandKey) => {
-      console.log('Running: ' + commandKey);
-      const command = config[commandKey];
-
-      exec(command, (err, stdout, stderr) => {
-        console.log({ err, stdout, stderr });
-      });
-    });
+        `Successfully saved path. Path to your configuration file is: ${config.path}`
+      )
+    );
   });
 
 program.parse(process.argv);
