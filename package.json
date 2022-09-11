@@ -24,7 +24,7 @@
     "ci:format": "prettier -c ."
   },
   "bin": {
-    "rtall": "index.js"
+    "run-them-all": "index.js"
   },
   "main": "index.js",
   "license": "MIT",
