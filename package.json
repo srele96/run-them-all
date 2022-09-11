@@ -1,6 +1,6 @@
 {
   "name": "run-them-all",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Allows you to save the series of commands to a configuration and run them all easily.",
   "keywords": [
     "run",
