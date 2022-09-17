@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
 const { writeFile } /****************/ = require('fs').promises;
-const { resolve } /******************/ = require('path');
+const { resolve, join } /******************/ = require('path');
 const { spawn } /********************/ = require('child_process');
 const { Command } /******************/ = require('commander');
 const { cosmiconfig } /**************/ = require('cosmiconfig');
 const packageJson /******************/ = require('./package.json');
 
 const explorer = cosmiconfig(packageJson.name);
+
+const configJson = join(__dirname, 'config.json');
 
 const program = new Command()
   .name(packageJson.name)
@@ -19,7 +21,7 @@ program
   .action((aliases) => {
     explorer
       // load path to users config
-      .load('config.json')
+      .load(configJson)
       .then((result) => result.config.path)
       // load users config
       .then(explorer.load)
@@ -52,7 +54,7 @@ program
     const absolutePath = resolve(path);
     const config = { path: absolutePath };
 
-    writeFile('config.json', JSON.stringify(config)).then(() =>
+    writeFile(configJson, JSON.stringify(config)).then(() =>
       console.log(
         `Successfully saved path. Path to your configuration file is: ${config.path}`
       )
